@@ -14,7 +14,54 @@
 ![image](https://github.com/user-attachments/assets/f3c7c8ec-4fd2-45cc-8877-1830a13367a1)
 
 ## Preliminaries
+- Hybrid beamforming model
 
-考慮一個具有基地台（BS）和多個用戶設備（UE）的毫米波下行通信網絡系統，並輔以重構智能表面（RIS）。設N_t為基地台的發射天線個數，N_RF為射頻鏈個數，N_RIS為RIS元件個數，N_UE為用戶設備個數。因此，整個下行系統由一個配備N_t個天線和N_RF個射頻鏈的基地台提供服務給N_UE個配備單天線的用戶設備，並由配備N_RIS個元件的RIS輔助。
+此圖為基地台透過混合波束成型服務多個用戶，波束成型會影響傳輸速率與能耗，因此將優化波束成型來找到最優的傳輸速率與能耗的最佳平衡點。除了優化波束成型，可以看到圖中有RF chain開關，由於RF chain開啟時（綠色）會消耗固定能耗，所以在此也將同時考慮將哪些射頻鏈關閉（灰色）來達到最優的能源效率。
 
-N<sup>t</sup>
+![image](https://github.com/user-attachments/assets/62d8d385-d3f3-41ba-acf1-1972d7b84dd1)
+
+<br>
+<br>
+
+- Signal transmission model for passive and active RIS
+
+此圖為在基地台服務多個用戶時，會透過被動RIS或主動RIS輔助來提升能源效率，因此將優化RIS上的相位位移來提升傳輸速率。除了優化相位位移外，這裡也將考慮開啟（綠色）或關閉（灰色）RIS元件來提升能源效率。
+
+![image](https://github.com/user-attachments/assets/db35aed2-0e95-478c-b3e8-76f06ed2b809)
+
+<br>
+<br>
+
+- Problem formulation for passive RIS system
+
+![image](https://github.com/user-attachments/assets/823867d7-cfff-468e-a439-5bafa3bee28d)
+
+<br>
+<br>
+
+- Problem formulation for active RIS system
+
+![image](https://github.com/user-attachments/assets/ebef1af4-1029-4a16-b7ee-ca3d14687954)
+
+## Scheme
+在本文所提出的BPOF方案中，將使用交換優化的方式逼近最優的能源效率系統。主要會先優化基地台的部分，也就是波束成型。優化完後，再來優化RIS的部分，也就是相位位移，之後兩者不斷迭代優化直至收斂。對於波束成型將會先固定類比波束成型與射頻鏈開關的變數並透過零強迫（Zeor Forcing, ZF）優化數位波束成型，之後再經過數學式子的轉換同時優化類比波束成型以及射頻鏈開關係數。對於RIS部分，也會經過數學式子的轉換並同時優化放大器、相位位移以及RIS元件開關係數。基地台部分的參數以及RIS部分的參數不斷地透過迭代直到收歛，以下分別為BPOF方法的總圖以及優化的流程圖。
+
+![image](https://github.com/user-attachments/assets/a43a6c0f-6093-4694-b0e2-5638762d673a)
+
+![image](https://github.com/user-attachments/assets/687c6c03-9890-4942-b197-239f13a817e6)
+
+<br>
+<br>
+
+經過數學轉換式之後，再經過流程圖中的phase 1與phase 2的不斷迭帶優化直到收斂後，會進入到流程圖中的phase 3，透過貪婪演算法找到最優的波束成型、相位位移以及射頻鏈、RIS元件開關的解，如下圖所示。
+
+![image](https://github.com/user-attachments/assets/4398647d-ab8b-4ec9-9a0f-43ee5ffcecdb)
+
+## Experimental Results
+
+基地台將被設定在位置為(0, 0)公尺的位置上，RIS的位置將被設定在位置為(50, 10)公尺的位置上，兩個用戶端將被隨機的設定在以位置(50, 0)公尺為中心，半徑為3公尺的圓上。每個基地台配置8根天線與6個射頻鏈，每個RIS的元件數為6個，每個用戶端為配置單天線。
+實驗的比較除了本文所提出之BPOF方案與Xie等人所提出之方案外，fully active與fully passive RIS分別代表主動的RIS上的元件全部為開啟以及被動的RIS上的元件全部為開啟的情況。
+
+![image](https://github.com/user-attachments/assets/e71693d2-a864-45b9-bf65-1eb251380472)
+
+
